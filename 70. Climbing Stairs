@@ -1,0 +1,14 @@
+class Solution {
+    public int climbStairs(int n) {
+        if(n <= 2) return n;   // Base cases: 1 step → 1 way, 2 steps → 2 ways
+        int prev1 = 1;         // Ways to reach step 1
+        int prev2 = 2;         // Ways to reach step 2
+        int cur = 0;
+        for(int i = 3; i <= n; i++){   // Start calculating from step 3
+            cur = prev1 + prev2;       // Ways to reach step i = sum of previous two
+            prev1 = prev2;             // Move forward: prev1 becomes prev2
+            prev2 = cur;               // prev2 becomes current
+        }
+        return cur;   // Final answer: ways to reach step n
+    }
+}
