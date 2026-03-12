@@ -1,0 +1,68 @@
+class Solution {
+    // TC - O(N^2), SC - O(N)
+    public int lengthOfLISss(int[] nums) {
+        int n = nums.length;
+        int[] dp = new int[n];
+        Arrays.fill(dp, 1);
+        int maxLen = 1;
+
+        for (int i = 1; i < n; i++) {
+            for (int j = 0; j < i; j++) {
+                if (nums[i] > nums[j]) {
+                    dp[i] = Math.max(dp[i], dp[j] + 1);
+                }
+            }
+            maxLen = Math.max(maxLen, dp[i]);
+        }
+        return maxLen;
+    }
+
+    public int lengthOfLISs(int[] nums) {
+        int n = nums.length;
+        Integer[][] memo = new Integer[n][n+1];
+        return helper(0, -1, nums, memo);
+    }
+
+    // TC - O(N^2), SC - O(N + N^2)
+    private int helper(int idx, int prevIdx, int[] nums, Integer[][] memo){
+        if(nums.length == idx) return 0;
+        if(memo[idx][prevIdx+1] != null) return memo[idx][prevIdx+1];
+
+        // unpick the current
+        int notTake = helper(idx+1, prevIdx, nums, memo);
+
+        //pick the current
+        int take = 0;
+        if(prevIdx == -1 || nums[idx] > nums[prevIdx]){
+            take = 1 + helper(idx+1, idx, nums, memo);
+        }
+        return memo[idx][prevIdx+1] = Math.max(notTake, take);
+    }
+    
+    // TC - O(2^N), SC - O(2^N)
+    private int helper(int idx, int prevIdx, int[] nums){
+        if(nums.length == idx) return 0;
+
+        // unpick the current
+        int notTake = helper(idx+1, prevIdx, nums);
+
+        //pick the current
+        int take = 0;
+        if(prevIdx == -1 || nums[idx] > nums[prevIdx]){
+            take = 1 + helper(idx+1, idx, nums);
+        }
+        return Math.max(notTake, take);
+    }
+
+    // Binary search, TC - O(N log N), SC - O(N)
+    public int lengthOfLIS(int[] nums) {
+        List<Integer> sub = new ArrayList<>();
+        for (int num : nums) {
+            int idx = Collections.binarySearch(sub, num);
+            if (idx < 0) idx = -(idx + 1);
+            if (idx == sub.size()) sub.add(num);
+            else sub.set(idx, num);
+        }
+        return sub.size();
+    }
+}
